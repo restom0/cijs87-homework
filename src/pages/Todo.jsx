@@ -18,31 +18,74 @@ const TodoPage = () => {
             });
     }
     const addTodo = (newTodo) => {
-        setTodos((prevTodos) => [...prevTodos, newTodo]);
+        // setTodos((prevTodos) => [...prevTodos, newTodo]);
+        fetch('https://650cecd347af3fd22f680d9a.mockapi.io/todo', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(newTodo)
+        }).then(res => {
+            if (res.ok) {
+                getTodo();
+            }
+        })
     };
-
     const updateTodo = (id) => {
-        setTodos(
-            todos.map((todo) => {
-                if (todo.id === id) {
-                    todo.isCompleted = !todo.isCompleted;
-                }
-                return todo;
-            })
-        );
+        // setTodos(
+        //     todos.map((todo) => {
+        //         if (todo.id === id) {
+        //             todo.isCompleted = !todo.isCompleted;
+        //         }
+        //         return todo;
+        //     })
+        // );
+        var isCompleted = false;
+        todos.map((todo) => {
+            if (id === todo.id) {
+                isCompleted = todo.isCompleted;
+            }
+        })
+        var data = new URLSearchParams();
+        data.append('isCompleted', !isCompleted);
+        fetch('https://650cecd347af3fd22f680d9a.mockapi.io/todo/' + id, {
+            method: 'PUT',
+            headers: { "Content-Type": 'application/x-www-form-urlencoded' },
+            body: data
+        }).then(res => {
+            if (res.ok) {
+                getTodo();
+            }
+        })
     };
     const editTodo = (id, text) => {
-        setTodos(
-            todos.map((todo) => {
-                if (todo.id === id) {
-                    todo.text = text;
-                }
-                return todo;
-            })
-        );
+        // setTodos(
+        //     todos.map((todo) => {
+        //         if (todo.id === id) {
+        //             todo.text = text;
+        //         }
+        //         return todo;
+        //     })
+        // );
+        var data = new URLSearchParams();
+        data.append('text', text);
+        fetch('https://650cecd347af3fd22f680d9a.mockapi.io/todo/' + id, {
+            method: 'PUT',
+            headers: { "Content-Type": 'application/x-www-form-urlencoded' },
+            body: data
+        }).then(res => {
+            if (res.ok) {
+                getTodo();
+            }
+        })
     };
     const deleteTodo = (id) => {
-        setTodos((todos) => (todos.filter((todo) => todo.id !== id)))
+        // setTodos((todos) => (todos.filter((todo) => todo.id !== id)))
+        fetch('https://650cecd347af3fd22f680d9a.mockapi.io/todo/' + id, {
+            method: 'DELETE',
+        }).then(res => {
+            if (res.ok) {
+                getTodo();
+            }
+        })
     };
     const calculateRemainingTasks = () => {
         return todos.filter(todo => todo.isCompleted === false).length;
